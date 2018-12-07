@@ -1,16 +1,5 @@
-# SEG2105
-Repository for code used in deliverables 1-4 in SEG2105, Fall term of 2018
+# Intro to Software Engineering Final Project
 
-To view our Firebase:
-	
-	we will need to give access to you, so please message kthor025@uottawa.ca
-	
-	for access
-
-
-To sign in as ADMIN:
-	email: admin@gmail.com
-	pass: password
 
 To sign in as SERVICE PROVIDER
 	email: tamer@gmail.com
@@ -21,7 +10,6 @@ To sign in as HOMEOWNER
 	pass: password
 
 **NOTE**
-- Our report is located in the Zip file under "SEG2105 - Final Report"
 
 Some Functionality Hints:
 **
