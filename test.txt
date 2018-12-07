@@ -1,0 +1,409 @@
+package com.example.carl.seg2105project;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.util.SparseBooleanArray;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+
+public class WelcomeActivity extends AppCompatActivity implements View.OnClickListener {
+    private FirebaseAuth mAuth;
+    private String userEmail;
+    private TextView textView;
+    private int selectedPosition;
+
+//<<<<<<< HEAD
+    private Button serviceProviderEdit;
+    private Button buttonDeleteService;
+    private Button buttonEditService;
+    private FloatingActionButton addService;
+//=======
+
+    private Button addServiceButton;
+    private Button deleteServiceButton;
+    private EditText newServiceName, newServiceRate;
+    private boolean haveAdmin = false;
+
+//>>>>>>> 97d9b7eb8c7d0ef94b134c671b7d49c0650f5f4f
+    private ListView myListView;
+    private ArrayAdapter<String> myAdapter;
+    ArrayList<String> listKeys = new ArrayList<String>();
+    private ArrayList<String> myServices;
+
+    private Boolean itemSelected = false;
+
+    EditText serviceNameEdit;
+    EditText serviceRateEdit;
+
+    AlertDialog.Builder alertDialogBuilder;
+
+//<<<<<<< HEAD
+    static String aType="";
+    static String aEmail="";
+//=======
+//>>>>>>> 97d9b7eb8c7d0ef94b134c671b7d49c0650f5f4f
+    DatabaseReference ref1;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_welcome);
+
+        serviceProviderEdit = findViewById(R.id.button_serviceProviderDetails);
+        serviceProviderEdit.setOnClickListener(this);
+
+//<<<<<<< HEAD
+        buttonDeleteService = findViewById(R.id.buttonDeleteService);
+        buttonDeleteService.setOnClickListener(this);
+
+        buttonEditService = findViewById(R.id.buttonEditService);
+        buttonEditService.setOnClickListener(this);
+
+        addService = findViewById(R.id.floatingActionButton);
+
+        myListView = (ListView)findViewById(R.id.listView);
+        myServices = new ArrayList<>();
+        myAdapter = new ArrayAdapter<String>(WelcomeActivity.this,  android.R.layout.simple_list_item_multiple_choice, myServices);
+//=======
+         myListView = (ListView)findViewById(R.id.listView);
+         myServices = new ArrayList<>();
+         myAdapter = new ArrayAdapter<String>(WelcomeActivity.this,  android.R.layout.simple_list_item_1, myServices);
+
+        deleteServiceButton = (Button) findViewById(R.id.button_delete);
+        //deleteServiceButton.setEnabled(false);
+//>>>>>>> 97d9b7eb8c7d0ef94b134c671b7d49c0650f5f4f
+
+        mAuth = FirebaseAuth.getInstance();
+        final FirebaseUser user = mAuth.getCurrentUser();
+        userEmail = user.getEmail();
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference ref = database.getReference("users");
+        ref1 = database.getReference("services");
+
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                textView = findViewById(R.id.textView_welcomeMessage);
+
+                for(DataSnapshot userSnap : dataSnapshot.getChildren()){
+                    User userInfo = userSnap.getValue(User.class);
+                    if(userInfo.getEmail().equals(userEmail))
+                        aType=userInfo.getAccountType();
+                    aEmail=userEmail;
+
+                }
+                textView.setText("Howdy, "+aEmail+"!"+"\n"+"You're signed in as: "+aType+".");
+
+                // HELLO MY NAME IS CARL HERE I AM PLACING STUFF THAT CHANGES WHICH BUTTONS
+                // SHOW UP DEPENDING ON THE ACCOUNT TYPE OF THE USER LOGGED IN
+
+                if(!aType.equals("ServiceProvider")) {
+                    serviceProviderEdit.setVisibility(View.GONE);
+                }
+
+                if(aType.equals("HomeOwner")||aType.equals("ServiceProvider")) {
+                    addService.hide();
+                }
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+
+        buttonDeleteService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                SparseBooleanArray checkedItemPositions = myListView.getCheckedItemPositions();
+                int itemCount = myListView.getCount();
+                //testing
+                /*for(int a=0; a<=itemCount;a++){
+                    System.out.println("Item #"+a+" in service array: "+myServices.get(a));
+                    System.out.println("Item #"+a+"in database: "+ref1.child(myServices.get(a)));
+                }*/
+
+                //testing ended
+                for(int i=0; i <= itemCount-2; i++){
+                    if(checkedItemPositions.get(i)){ //look for built in get value of checkbox
+
+                        ref1.child(myServices.get(i)).removeValue(); //get value of the checkbox
+                        myAdapter.remove(myServices.get(i));
+                        myServices.remove(myServices.get(i));
+                    }
+                    //myListView.setAdapter(myAdapter);
+                }
+                checkedItemPositions.clear();
+                myListView.clearAnimation();
+                myAdapter.notifyDataSetChanged();
+                Toast.makeText(WelcomeActivity.this, "Service deleted!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        ref1.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                myServices.clear();
+
+                for(DataSnapshot dataSnapshotService : dataSnapshot.getChildren()){
+                    Service service = dataSnapshotService.getValue(Service.class);
+                    myServices.add(service.getServiceName());
+                }
+                myAdapter.notifyDataSetChanged();
+                myListView.setAdapter(myAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        myListView.setOnItemClickListener(
+                new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        selectedPosition = position;
+                        //deleteServiceButton.setEnabled(true);
+                        itemSelected = true; //TODO NOWWW, go to Deleting List Items section
+                    }
+                }
+        );
+    }
+
+    public void onClick(View view){
+        switch(view.getId()){
+            case R.id.button_serviceProviderDetails:
+                goToEditServiceProviderInfo(view);
+                break;
+        }
+    }
+
+    public void addServiceOnClick(View view) {
+        if(aType.equals("HomeOwner")){
+            Toast.makeText(getApplicationContext(), "You are a HomeOwner you cannot add a service! Sign in as an Admin to add services.", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            // get prompts.xml view
+            LayoutInflater li = LayoutInflater.from(this);
+            View promptsView = li.inflate(R.layout.dialog_layout, null);
+
+            alertDialogBuilder = new AlertDialog.Builder(
+                    this);
+
+            // set prompts.xml to alert dialog builder
+            alertDialogBuilder.setView(promptsView);
+
+            alertDialogBuilder.setTitle("Add a Service");
+
+            alertDialogBuilder.show();
+
+            serviceNameEdit = (EditText) promptsView
+                    .findViewById(R.id.nameEdit);
+
+            serviceRateEdit = (EditText) promptsView
+                    .findViewById(R.id.rateEdit);
+
+            alertDialogBuilder.setCancelable(true);
+        }
+    }
+
+    public void addServiceChangeOnClick(View view) {
+        if(aType.equals("HomeOwner")){
+            Toast.makeText(getApplicationContext(), "You are a HomeOwner you cannot edit a service! Sign in as an Admin to add services.", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            // get prompts.xml view
+            LayoutInflater li = LayoutInflater.from(this);
+            View promptsView = li.inflate(R.layout.dialog_edit_service_layout, null);
+
+            alertDialogBuilder = new AlertDialog.Builder(
+                    this);
+
+            // set prompts.xml to alert dialog builder
+            alertDialogBuilder.setView(promptsView);
+
+            alertDialogBuilder.setTitle("Edit Service");
+
+            alertDialogBuilder.show();
+
+            serviceNameEdit = (EditText) promptsView
+                    .findViewById(R.id.nameEdit2);
+
+            serviceRateEdit = (EditText) promptsView
+                    .findViewById(R.id.rateEdit2);
+
+            alertDialogBuilder.setCancelable(true);
+        }
+    }
+
+    public void goToEditServiceProviderInfo(View view) {
+        Intent intent = new Intent(this, ServiceProviderInfo.class);
+        startActivity(intent);
+    }
+
+    public void removeServiceOnClick(View view){
+
+        //remove the service from listView
+        LayoutInflater li1 = LayoutInflater.from(this);
+        View promptsView = li1.inflate(R.layout.dialog_layout, null);
+
+
+    }
+
+    public void addToDatabase(View v) {
+
+        String name = serviceNameEdit.getText().toString();
+        String rate = serviceRateEdit.getText().toString();
+
+       Service service = new Service(name, rate);
+
+//<<<<<<< HEAD
+       //VALIDATION OF SERVICE RATE AND NAME
+       if (service.getServiceName().matches("") || service.getServiceRate().matches("")) {
+           if (service.getServiceName().matches("") && service.getServiceRate().matches("")){
+               Toast.makeText(getApplicationContext(), "You did not enter a service name or service rate", Toast.LENGTH_SHORT).show();
+
+           }
+           else if (service.getServiceName().matches("")){
+               Toast.makeText(getApplicationContext(), "You did not enter a service name", Toast.LENGTH_SHORT).show();
+           }
+           else {
+               Toast.makeText(getApplicationContext(), "You did not enter a service rate", Toast.LENGTH_SHORT).show();
+
+           }
+//=======
+       ref1.child(service.getServiceName()).setValue(service);
+//>>>>>>> 97d9b7eb8c7d0ef94b134c671b7d49c0650f5f4f
+
+        }
+
+        else {
+
+           if (service.getServiceRate().matches("-?\\d+(.\\d+)?") == false){
+               Toast.makeText(getApplicationContext(), "Please input a numeric value for the service rate", Toast.LENGTH_SHORT).show();
+           }
+           else{
+               ref1.child(service.getServiceName()).setValue(service);
+           }
+       }
+    }
+
+//<<<<<<< HEAD
+    public void addChangesToDatabase(View v) {
+
+        String name = serviceNameEdit.getText().toString();
+        String rate = serviceRateEdit.getText().toString();
+
+        buttonEditService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SparseBooleanArray checkedItemPositions = myListView.getCheckedItemPositions();
+                int itemCount = myListView.getCount();
+
+                for(int i=itemCount-1; i >= 0; i--){
+                    if(checkedItemPositions.get(i)){
+                        //creates dialog used for add service, if any field is null, leave as is, if not null, use setters to update
+                    }
+                }
+                checkedItemPositions.clear();
+                myListView.clearAnimation();
+                myAdapter.notifyDataSetChanged();
+                Toast.makeText(WelcomeActivity.this, "Service edited!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        //apply changes to db
+        Service service = new Service(name, rate);
+
+        if (service.getServiceRate().matches("-?\\d+(.\\d+)?") == false){
+            Toast.makeText(getApplicationContext(), "Please input a numeric value for the service rate", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            ref1.child(service.getServiceName()).setValue(service);
+        }
+    }
+
+//=======
+    public void removeFromDatabase(View v1){
+        myListView.setItemChecked(selectedPosition, false);
+        ref1.child(listKeys.get(selectedPosition)).removeValue();
+    }
+//>>>>>>> 97d9b7eb8c7d0ef94b134c671b7d49c0650f5f4f
+}
+
+
+
+
+
+
+===============================================================================================================================================
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+
+        <EditText
+            android:id="@+id/nameEdit2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Service Name"
+            android:textSize="24dp" />
+
+        <EditText
+            android:id="@+id/rateEdit2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Service Rate"
+            android:text=""
+            android:textSize="24dp" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="addChangesToDatabase"
+            android:text="Apply Changes" />
+
+        <requestFocus />
+
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
+
+
+===================================================================================================================================

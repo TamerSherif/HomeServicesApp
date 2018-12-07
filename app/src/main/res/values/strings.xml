@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">SEG2105Project</string>
+    <string name="create_account">Create Account</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="submit">Submit</string>
+    <string name="login">Login</string>
+    <string name="service_name">Service Name</string>
+    <string name="hr">$/hr</string>
+    <string name="add">Add</string>
+    <string name="service_rate">Service Rate</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="edit_info">Edit Info</string>
+    <string name="email">Email</string>
+    <string name="address">Address(*)</string>
+    <string name="phone_number">Phone Number(*)</string>
+    <string name="general_description">General Description</string>
+    <string name="fields_marked_with_are_mandatory_and_must_be_filled">Fields marked with (*) are mandatory and must be filled!</string>
+    <string name="sunday">Sunday</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="are_you_licensed">Are you licensed?</string>
+    <string name="view_info">View Info</string>
+    <string name="loading_your_info">Loading your info...</string>
+
+    <string-array name="AccountTypes">
+        <item>HomeOwner</item>
+        <item>ServiceProvider</item>
+        <item>Admin</item>
+    </string-array>
+
+    <string-array name="Licensed">
+
+        <item>No</item>
+        <item>Yes</item>
+
+    </string-array>
+    <string name="title_activity_service_providers">service_providers</string>
+</resources>

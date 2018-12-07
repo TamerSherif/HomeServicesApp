@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">SEG2105Project</string>
+    <string name="create_account">Create Account</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="submit">Submit</string>
+    <string name="login">Login</string>
+
+    <string-array name="AccountTypes">
+        <item>HomeOwner</item>
+        <item>ServiceProvider</item>
+        <item>Admin</item>
+    </string-array>
+</resources>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/serviceInfoView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+
+        <EditText
+            android:id="@+id/nameEdit2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Service Name"
+            android:textSize="24dp" />
+
+        <EditText
+            android:id="@+id/rateEdit2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Service Rate"
+            android:text=""
+            android:textSize="24dp" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="addChangesToDatabase"
+            android:text="Apply Changes" />
+
+        <requestFocus />
+
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
