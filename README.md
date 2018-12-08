@@ -44,7 +44,7 @@ Home Owner Functionality Tips:
 1. Log in as home owner
 2. To select a service that you want to see SPs for, simply long press on the service
 3. You will see a list of emails of the SPs that provide that specific service
-4. You can double click on the email to view the SP's info (a bit glitchy sometimes)but hey we got pretty far :D
+4. You can double click on the email to view the SP's info (a bit glitchy sometimes)
 5. If you want to go back after clicking on an SP email to view their info, click on the white background under the purple popup NOT the back button
 
 [![CircleCI](https://circleci.com/gh/KateAThornley/SEG2105/tree/master.svg?style=svg&circle-token=2951f9661379fc415b480d2154fd2f1a7a24b7e2)](https://circleci.com/gh/KateAThornley/SEG2105/tree/master)
